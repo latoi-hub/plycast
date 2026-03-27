@@ -2,6 +2,7 @@
 
 from .pipeline import PlycastPipeline
 from .providers import (
+    EspeakTTS,
     IdentityTranslator,
     LLMTranslator,
     LibreTranslateTranslator,
@@ -16,6 +17,7 @@ __all__ = [
     "LibreTranslateTranslator",
     "LLMTranslator",
     "infer_llm_provider",
+    "EspeakTTS",
     "SystemSayTTS",
     "TextFileTTS",
 ]
