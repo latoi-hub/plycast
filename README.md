@@ -42,7 +42,7 @@ The default CLI translator is **LibreTranslate**, which you can [self-host](http
 
 - **Input:** `.txt`, `.md`; optional `.pdf` / `.docx` (`pip install ".[docs]"`); images with OCR and `--source-lang` for Tesseract languages (e.g. `zh`).
 - **Translation:** chunked text; **LLM** path for natural tone; **LibreTranslate** for a free, self-hostable draft you can review and edit; Identity, OpenAI, Anthropic, unified **LLM** routing (`LLMTranslator`).
-- **Audio:** `SystemSayTTS`, `TextFileTTS`; configurable format and voice.
+- **Audio:** **`SystemSayTTS`** (macOS **`say`** only); **`TextFileTTS`** or **`--tts text_file`** everywhere for text-only output. On Linux/Windows, use **`text_file`** or a custom **`TTSProvider`** — see **[docs/Voices.md](docs/Voices.md)**.
 - **CLI:** flags for translator, languages, API keys, TTS, chunk size — see QuickStart.
 
 ## Quick CLI sample (LLM)
@@ -78,6 +78,7 @@ Implement custom backends against **`TranslatorProvider`** and **`TTSProvider`**
 | Doc | Contents |
 |-----|----------|
 | **[docs/QuickStart.md](docs/QuickStart.md)** | Install, prerequisites, CLI, LibreTranslate Docker, LLM examples, Python API, env vars, troubleshooting |
+| **[docs/Voices.md](docs/Voices.md)** | macOS **`say`** voices for **`--tts system_say`** / **`--voice`** |
 | **This README** | Project introduction and layout |
 
 ## Contributing

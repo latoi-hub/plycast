@@ -8,6 +8,7 @@ Step-by-step install and usage for **plycast**. For a short overview of the proj
 - [Installing plycast](#installing-plycast)
 - [Optional: PDF and Word](#optional-pdf-and-word)
 - [System software (OCR and audio)](#system-software-ocr-and-audio)
+- [macOS voices (`--voice`)](Voices.md)
 - [Running the CLI](#running-the-cli)
 - [Translators](#translators)
 - [Self-hosted LibreTranslate (Docker)](#self-hosted-libretranslate-docker)
@@ -68,9 +69,10 @@ This adds **pypdf** and **python-docx** for `.pdf` and `.docx` ingestion. Same a
 
 | Need | What to install |
 |------|------------------|
-| **Image OCR** (`.png`, `.jpg`, …) | A **Tesseract** binary on your `PATH`. macOS: `brew install tesseract tesseract-lang` (language packs, e.g. Chinese `chi_sim`). |
-| **MP3 / m4a / wav** from `system_say` | **ffmpeg** on `PATH`. macOS: `brew install ffmpeg`. |
-| **macOS speech** | Built-in `say`; pick `--voice` to match the target language. |
+| **Image OCR** (`.png`, `.jpg`, …) | A **Tesseract** binary on your `PATH`. macOS: `brew install tesseract tesseract-lang` (language packs, e.g. Chinese `chi_sim`). Linux/Windows: install Tesseract from your package manager or installer. |
+| **MP3 / m4a / wav** from `system_say` | **ffmpeg** on `PATH` (for conversion after `say`). macOS: `brew install ffmpeg`. |
+| **Speech (`--tts system_say`)** | **macOS only** (uses `say`). On **Linux or Windows**, use **`--tts text_file`** to skip audio, or plug in your own TTS via the Python API — see **[Voices.md](Voices.md)** (“Not using macOS?”). |
+| **macOS: pick a voice** | Built-in `say`; use **`--voice`**. See **[Voices.md](Voices.md)** to list voices per language. |
 
 For images, **`--source-lang`** selects the Tesseract language (e.g. `zh` → simplified Chinese).
 
