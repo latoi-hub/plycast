@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import sys
 from pathlib import Path
 
 from .models import PipelineInput
@@ -29,6 +30,11 @@ def _get_env(*keys: str) -> str | None:
         if value:
             return value
     return None
+
+
+def _default_tts_backend() -> str:
+    """macOS: ``say``; Linux/Windows: espeak-ng when available (CLI default)."""
+    return "system_say" if sys.platform == "darwin" else "espeak"
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -74,14 +80,16 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--tts",
-        choices=("system_say", "text_file"),
-        default="system_say",
-        help="system_say: macOS speech (default); text_file: write text artifact instead of audio",
+        choices=("system_say", "espeak", "text_file"),
+        default=_default_tts_backend(),
+        help="system_say: macOS say; espeak: espeak-ng/espeak (Linux-friendly default); "
+        "text_file: text artifact only",
     )
     parser.add_argument(
         "--voice",
         default=None,
-        help="Voice name for system_say",
+        help="system_say: macOS voice name; espeak: espeak-ng -v voice (e.g. vi, cmn); omit "
+        "to infer from --target-lang",
     )
     parser.add_argument(
         "--max-chunk-chars",
@@ -93,7 +101,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--audio-format",
         choices=("mp3", "aiff", "wav", "m4a"),
         default="mp3",
-        help="Audio output format (system_say converts when needed)",
+        help="Audio output format (system_say / espeak convert when needed)",
     )
     return parser
 
@@ -139,11 +147,12 @@ def main() -> None:
     else:
         translator = TranslateService.make_identity_translator()
 
-    tts = (
-        AudioService.make_system_say_tts(voice=args.voice)
-        if args.tts == "system_say"
-        else AudioService.make_text_file_tts()
-    )
+    if args.tts == "system_say":
+        tts = AudioService.make_system_say_tts(voice=args.voice)
+    elif args.tts == "espeak":
+        tts = AudioService.make_espeak_tts(voice=args.voice)
+    else:
+        tts = AudioService.make_text_file_tts()
     pipeline = PlycastPipeline(translator=translator, tts=tts)
     result = pipeline.run(
         payload=PipelineInput(

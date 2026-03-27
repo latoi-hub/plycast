@@ -25,7 +25,7 @@ def _find_tesseract_executable() -> str | None:
 
 
 def _ensure_tesseract_cmd(pytesseract: object) -> None:
-    """Point pytesseract at ``tesseract`` when PATH is minimal (e.g. GUI/IDE launches)."""
+    """Point pytesseract at ``tesseract`` when PATH is minimal (IDE/GUI)."""
     global _tesseract_cmd_configured
     if _tesseract_cmd_configured:
         return
@@ -39,6 +39,7 @@ def _ensure_tesseract_cmd(pytesseract: object) -> None:
     pyt = pytesseract.pytesseract  # type: ignore[attr-defined]
     pyt.tesseract_cmd = exe
     _tesseract_cmd_configured = True
+
 
 # Suffixes handled by Tesseract (see :func:`_read_image_ocr`).
 _IMAGE_SUFFIXES = frozenset(
@@ -142,7 +143,12 @@ class ReadTextService:
         source_language: str | None = None,
     ) -> ReadTextResult:
         if not path.exists():
-            raise FileNotFoundError(f"Input file not found: {path}")
+            hint = (
+                f" (cwd: {Path.cwd()}; tried: {path.resolve()})"
+                if not path.is_absolute()
+                else f" (tried: {path.resolve()})"
+            )
+            raise FileNotFoundError(f"Input file not found: {path}{hint}")
         ext = path.suffix.lower()
         if ext in _IMAGE_SUFFIXES:
             tess_lang = (
