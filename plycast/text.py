@@ -3,12 +3,21 @@ from __future__ import annotations
 from pathlib import Path
 
 
-def read_text_file(path: Path) -> str:
-    if not path.exists():
-        raise FileNotFoundError(f"Input file not found: {path}")
-    if path.suffix.lower() not in {".txt", ".md"}:
-        raise ValueError("Only .txt and .md are supported.")
-    return path.read_text(encoding="utf-8")
+def read_text_file(
+    path: Path,
+    *,
+    source_language: str | None = None,
+) -> str:
+    """
+    Load plain text via :class:`~plycast.services.ReadTextService`
+    (all supported file types).
+    """
+    from plycast.services.read_text import ReadTextService
+
+    return ReadTextService().read(
+        path,
+        source_language=source_language,
+    ).text
 
 
 def chunk_text(text: str, max_chunk_chars: int) -> list[str]:

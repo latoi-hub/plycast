@@ -3,13 +3,17 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "latoi-multicast"
+name = "plycast"
 version = "0.1.0"
-description = "Library to ingest long-form text, translate it, and synthesize audio."
+description = "Ingest text (txt/md/pdf/docx/images), translate, and synthesize audio."
 readme = "README.md"
 requires-python = ">=3.10"
+dependencies = [
+  "pillow>=10.0",
+  "pytesseract>=0.3.10",
+]
 authors = [
-  { name = "latoi-multicast contributors" }
+  { name = "plycast contributors" }
 ]
 keywords = ["translation", "tts", "audiobook", "library"]
 classifiers = [
@@ -18,9 +22,14 @@ classifiers = [
   "Operating System :: OS Independent"
 ]
 
+[project.optional-dependencies]
+docs = ["pypdf>=4.0", "python-docx>=1.0"]
+full = ["pypdf>=4.0", "python-docx>=1.0"]
+dev = ["pytest>=8.0"]
+
 [project.scripts]
-latoi-multicast = "plycast.cli:main"
 plycast = "plycast.cli:main"
+latoi-multicast = "plycast.cli:main"
 
 [tool.setuptools]
 package-dir = {"" = "."}
@@ -28,3 +37,7 @@ package-dir = {"" = "."}
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["plycast*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

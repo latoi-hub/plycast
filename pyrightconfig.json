@@ -1,0 +1,11 @@
+{
+  "include": ["plycast"],
+  "pythonVersion": "3.10",
+  "executionEnvironments": [
+    {
+      "root": ".",
+      "pythonVersion": "3.10",
+      "extraPaths": ["."]
+    }
+  ]
+}

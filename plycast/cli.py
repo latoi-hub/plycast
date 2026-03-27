@@ -6,14 +6,7 @@ from pathlib import Path
 
 from .models import PipelineInput
 from .pipeline import PlycastPipeline
-from .providers import (
-    AnthropicTranslator,
-    IdentityTranslator,
-    LibreTranslateTranslator,
-    OpenAITranslator,
-    SystemSayTTS,
-    TextFileTTS,
-)
+from .services import AudioService, TranslateService
 
 
 def _load_dotenv(path: Path) -> None:
@@ -43,30 +36,41 @@ def build_parser() -> argparse.ArgumentParser:
         prog="plycast",
         description="Read long-form text, translate it, and generate audio output.",
     )
-    parser.add_argument("--input", required=True, help="Input .txt or .md path")
+    parser.add_argument(
+        "--input",
+        required=True,
+        help="Input file (.txt/.md/.pdf/.docx or image for OCR)",
+    )
     parser.add_argument("--output-dir", default="dist", help="Output directory")
     parser.add_argument("--source-lang", required=True, help="Source language code")
     parser.add_argument("--target-lang", required=True, help="Target language code")
     parser.add_argument(
         "--translator",
-        choices=("identity", "libretranslate", "openai", "anthropic"),
+        choices=("identity", "libretranslate", "llm"),
         default="libretranslate",
-        help="Translator backend",
+        help="Translator backend (llm: openai/anthropic via --llm-model)",
     )
     parser.add_argument(
-        "--libretranslate-url",
-        default="https://libretranslate.com",
-        help="Base URL for LibreTranslate backend",
+        "--base-url",
+        default=None,
+        help="Backend base URL: LibreTranslate server, or LLM API base (defaults per mode)",
     )
-    parser.add_argument("--libretranslate-api-key", default=None)
-    parser.add_argument("--openai-api-key", default=None)
-    parser.add_argument("--openai-model", default="gpt-4o-mini")
-    parser.add_argument("--openai-base-url", default="https://api.openai.com/v1")
-    parser.add_argument("--anthropic-api-key", default=None)
-    parser.add_argument("--anthropic-model", default="claude-3-5-haiku-latest")
     parser.add_argument(
-        "--anthropic-base-url",
-        default="https://api.anthropic.com/v1",
+        "--api-key",
+        default=None,
+        help="API key for the active backend (LibreTranslate or LLM; env fallbacks apply)",
+    )
+    parser.add_argument(
+        "--llm-model",
+        default="gpt-4o-mini",
+        help="With --translator llm: model id (default gpt-4o-mini); vendor inferred from "
+        "name unless --llm-provider is set",
+    )
+    parser.add_argument(
+        "--llm-provider",
+        choices=("openai", "anthropic"),
+        default=None,
+        help="When --translator llm: force vendor (default: infer from --llm-model)",
     )
     parser.add_argument(
         "--tts",
@@ -93,41 +97,46 @@ def main() -> None:
     args = build_parser().parse_args()
 
     if args.translator == "libretranslate":
-        translator = LibreTranslateTranslator(
-            base_url=args.libretranslate_url,
-            api_key=(
-                args.libretranslate_api_key
-                or _get_env("LIBRETRANSLATE_API_KEY", "libretranslate-api-key")
-            ),
+        base_url = args.base_url or "https://libretranslate.com"
+        api_key = args.api_key or _get_env(
+            "LIBRETRANSLATE_API_KEY",
+            "libretranslate-api-key",
         )
-    elif args.translator == "openai":
-        key = args.openai_api_key or _get_env("OPENAI_API_KEY", "openai-api-key")
+        translator = TranslateService.make_libretranslate_translator(
+            base_url=base_url,
+            api_key=api_key,
+        )
+    elif args.translator == "llm":
+        provider = args.llm_provider
+        if provider is None:
+            provider = TranslateService.infer_llm_provider(args.llm_model)
+        if provider == "openai":
+            key = args.api_key or _get_env(
+                "OPENAI_API_KEY",
+                "openai-api-key",
+            )
+            base_url = args.base_url or "https://api.openai.com/v1"
+        else:
+            key = args.api_key or _get_env(
+                "ANTHROPIC_API_KEY",
+                "anthropic-api-key",
+            )
+            base_url = args.base_url or "https://api.anthropic.com/v1"
         if not key:
-            raise ValueError("Missing OpenAI key.")
-        translator = OpenAITranslator(
+            raise ValueError(f"Missing API key for LLM provider {provider}.")
+        translator = TranslateService.make_llm_translator(
             api_key=key,
-            model=args.openai_model,
-            base_url=args.openai_base_url,
-        )
-    elif args.translator == "anthropic":
-        key = args.anthropic_api_key or _get_env(
-            "ANTHROPIC_API_KEY",
-            "anthropic-api-key",
-        )
-        if not key:
-            raise ValueError("Missing Anthropic key.")
-        translator = AnthropicTranslator(
-            api_key=key,
-            model=args.anthropic_model,
-            base_url=args.anthropic_base_url,
+            model=args.llm_model,
+            provider=provider,
+            base_url=base_url,
         )
     else:
-        translator = IdentityTranslator()
+        translator = TranslateService.make_identity_translator()
 
     tts = (
-        SystemSayTTS(voice=args.voice)
+        AudioService.make_system_say_tts(voice=args.voice)
         if args.tts == "system_say"
-        else TextFileTTS()
+        else AudioService.make_text_file_tts()
     )
     pipeline = PlycastPipeline(translator=translator, tts=tts)
     result = pipeline.run(

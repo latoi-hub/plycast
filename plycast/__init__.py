@@ -2,20 +2,20 @@
 
 from .pipeline import PlycastPipeline
 from .providers import (
-    AnthropicTranslator,
     IdentityTranslator,
+    LLMTranslator,
     LibreTranslateTranslator,
-    OpenAITranslator,
     SystemSayTTS,
     TextFileTTS,
+    infer_llm_provider,
 )
 
 __all__ = [
     "PlycastPipeline",
     "IdentityTranslator",
     "LibreTranslateTranslator",
-    "OpenAITranslator",
-    "AnthropicTranslator",
+    "LLMTranslator",
+    "infer_llm_provider",
     "SystemSayTTS",
     "TextFileTTS",
 ]

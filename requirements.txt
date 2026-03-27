@@ -1,0 +1,3 @@
+# Install plycast and runtime dependencies declared in pyproject.toml.
+# Optional: pip install -e ".[docs]" for PDF/Word ingest, or -e ".[dev]" for tests.
+-e .
