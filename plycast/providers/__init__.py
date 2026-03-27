@@ -18,7 +18,7 @@ from .anthropic import AnthropicClient, AnthropicTranslator
 from .identity import IdentityTranslator
 from .libretranslate import LibreTranslateClient, LibreTranslateTranslator
 from .openai import BearerToken, OpenAIClient, OpenAITranslator
-from .tts import SystemSayTTS, TextFileTTS
+from .tts import EspeakTTS, SystemSayTTS, TextFileTTS
 
 # LLM
 from .llm import LLMTranslator, infer_llm_provider
@@ -36,6 +36,7 @@ __all__ = [
     "LibreTranslateTranslator",
     "OpenAIClient",
     "OpenAITranslator",
+    "EspeakTTS",
     "SystemSayTTS",
     "TextFileTTS",
     "TTSProvider",

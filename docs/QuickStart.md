@@ -8,6 +8,7 @@ Step-by-step install and usage for **plycast**. For a short overview of the proj
 - [Installing plycast](#installing-plycast)
 - [Optional: PDF and Word](#optional-pdf-and-word)
 - [System software (OCR and audio)](#system-software-ocr-and-audio)
+- [macOS voices (`--voice`)](Voices.md)
 - [Running the CLI](#running-the-cli)
 - [Translators](#translators)
 - [Self-hosted LibreTranslate (Docker)](#self-hosted-libretranslate-docker)
@@ -68,9 +69,12 @@ This adds **pypdf** and **python-docx** for `.pdf` and `.docx` ingestion. Same a
 
 | Need | What to install |
 |------|------------------|
-| **Image OCR** (`.png`, `.jpg`, …) | A **Tesseract** binary on your `PATH`. macOS: `brew install tesseract tesseract-lang` (language packs, e.g. Chinese `chi_sim`). |
-| **MP3 / m4a / wav** from `system_say` | **ffmpeg** on `PATH`. macOS: `brew install ffmpeg`. |
-| **macOS speech** | Built-in `say`; pick `--voice` to match the target language. |
+| **Image OCR** (`.png`, `.jpg`, …) | A **Tesseract** binary on your `PATH`. macOS: `brew install tesseract tesseract-lang` (language packs, e.g. Chinese `chi_sim`). Linux/Windows: install Tesseract from your package manager or installer. |
+| **MP3 / m4a / aiff** (after WAV) | **ffmpeg** on `PATH`. macOS: `brew install ffmpeg`. Linux: `apt install ffmpeg` or equivalent. |
+| **`--tts system_say`** | **macOS** `say` only. |
+| **`--tts espeak`** | **`espeak-ng`** or **`espeak`** on `PATH` — default TTS on **Linux** (and non-macOS). See **[Voices.md](Voices.md)**. |
+| **`--tts text_file`** | Any OS; no audio engine. |
+| **Pick `--voice`** | **`system_say`**: macOS voice name. **`espeak`**: `espeak-ng --voices`. See **[Voices.md](Voices.md)**. |
 
 For images, **`--source-lang`** selects the Tesseract language (e.g. `zh` → simplified Chinese).
 
@@ -96,7 +100,7 @@ plycast --input ./book.txt --output-dir ./dist --source-lang en --target-lang vi
 **Outputs**
 
 - Translated text: `dist/<stem>.<target>.txt`
-- Audio (default **mp3** with `system_say`): `dist/<stem>.<target>.mp3`
+- Audio (default **mp3** with `system_say` or `espeak`): `dist/<stem>.<target>.mp3`
 
 ## Translators
 
@@ -152,8 +156,8 @@ Adjust `LT_LOAD_ONLY` in `docker-compose.yml` for loaded languages, then restart
 | `--llm-provider openai\|anthropic` | Force vendor; omit to infer from model name |
 | `--base-url` | LibreTranslate server URL, or LLM API base (defaults if omitted) |
 | `--api-key` | Optional LibreTranslate key; required for `llm` unless set in env |
-| `--tts text_file` | No audio; writes a text artifact |
-| `--voice` | macOS `say` voice |
+| `--tts system_say\|espeak\|text_file` | macOS speech / espeak-ng / text-only (defaults: `system_say` on macOS, `espeak` elsewhere) |
+| `--voice` | `system_say` voice name or `espeak-ng -v` voice |
 | `--max-chunk-chars` | Translation chunk size |
 | `--audio-format mp3\|aiff\|wav\|m4a` | Audio output |
 
@@ -283,6 +287,6 @@ Supported smoke translators: `identity`, `libretranslate`.
 ## Troubleshooting
 
 - **`system_say` spells characters:** choose a `--voice` that matches the target language, and avoid mixing scripts (e.g. Chinese + Latin) in one paragraph when possible.
-- **MP3 output:** `system_say` writes AIFF first; **ffmpeg** converts. Install ffmpeg if conversion fails.
+- **MP3 output:** `system_say` writes AIFF first; **ffmpeg** converts. Install ffmpeg if conversion fails. Same for **`espeak`** (WAV → mp3/m4a) when not using **`--audio-format wav`**.
 - **`No module named 'PIL'`:** reinstall with `pip install -e .` so Pillow is installed.
 - **`tesseract` not found:** install Tesseract and ensure it is on `PATH`, or install via Homebrew (`brew install tesseract tesseract-lang`). The library also checks common Homebrew paths on macOS.

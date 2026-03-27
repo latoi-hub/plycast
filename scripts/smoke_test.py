@@ -12,6 +12,7 @@ if str(ROOT_DIR) not in sys.path:
 from plycast.models import PipelineInput
 from plycast.pipeline import PlycastPipeline
 from plycast.providers import (
+    EspeakTTS,
     IdentityTranslator,
     LibreTranslateTranslator,
     SystemSayTTS,
@@ -43,11 +44,15 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--target-lang", default="vi")
     parser.add_argument(
         "--tts",
-        choices=("text_file", "system_say"),
+        choices=("text_file", "system_say", "espeak"),
         default="text_file",
         help="TTS backend for smoke test",
     )
-    parser.add_argument("--voice", default=None, help="Voice for system_say")
+    parser.add_argument(
+        "--voice",
+        default=None,
+        help="Voice for system_say or espeak-ng -v",
+    )
     parser.add_argument(
         "--input-text",
         default=None,
@@ -83,11 +88,12 @@ def main() -> None:
     else:
         translator = IdentityTranslator()
 
-    tts = (
-        SystemSayTTS(voice=args.voice)
-        if args.tts == "system_say"
-        else TextFileTTS()
-    )
+    if args.tts == "system_say":
+        tts = SystemSayTTS(voice=args.voice)
+    elif args.tts == "espeak":
+        tts = EspeakTTS(voice=args.voice)
+    else:
+        tts = TextFileTTS()
     pipeline = PlycastPipeline(translator=translator, tts=tts)
 
     result = pipeline.run(
