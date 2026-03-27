@@ -22,6 +22,11 @@ classifiers = [
   "Operating System :: OS Independent"
 ]
 
+[project.urls]
+# Replace with your real GitHub (or other) URLs before publishing.
+Documentation = "https://github.com/latoi-hub/plycast#readme"
+Repository = "https://github.com/latoi-hub/plycast"
+
 [project.optional-dependencies]
 docs = ["pypdf>=4.0", "python-docx>=1.0"]
 full = ["pypdf>=4.0", "python-docx>=1.0"]
