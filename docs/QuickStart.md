@@ -25,7 +25,7 @@ Step-by-step install and usage for **plycast**. For a short overview of the proj
 
 ## Installing plycast
 
-**From PyPI** (after you [publish the package](Publishing.md)):
+**From PyPI:**
 
 ```bash
 pip install plycast

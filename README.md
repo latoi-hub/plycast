@@ -2,9 +2,12 @@
 
 [![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Open Source](https://img.shields.io/badge/open%20source-yes-success.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-0.1.0-informational.svg)](pyproject.toml)
 
 **Ingest** text from common formats, **translate** in chunks, **synthesize** audio — as a **Python library** you import and a **CLI** you run on the same implementation.
+
+**plycast** is **open-source** software ([MIT License](LICENSE)): you may use, modify, and distribute it freely.
 
 ---
 
@@ -14,6 +17,7 @@
 - [Features](#features)
 - [Architecture](#architecture)
 - [Documentation](#documentation)
+- [Contributing](#contributing)
 - [License](#license)
 
 ## About
@@ -31,7 +35,7 @@ The default CLI translator is **LibreTranslate**, which you can [self-host](http
 
 **Choosing a translator:** **`--translator llm`** (OpenAI or Anthropic) is aimed at **natural, fluent** output—well suited to audiobook-style listening when you want the model’s tone and wording. **LibreTranslate** is a **free, open stack** you can run yourself; it is a strong fit when you want a **draft to review and edit** (adjust the translated `.txt`, then regenerate audio) or to keep costs and data policy simple.
 
-**Install:** after the package is on PyPI, use **`pip install plycast`** (like any other library). Until then, install from a clone or git URL — see **[docs/QuickStart.md](docs/QuickStart.md)**. Maintainers: **[docs/Publishing.md](docs/Publishing.md)** explains how to upload to PyPI.
+**Install:** use **`pip install plycast`** from PyPI, or install from a clone — see **[docs/QuickStart.md](docs/QuickStart.md)**.
 
 ## Features
 
@@ -54,9 +58,14 @@ Implement custom backends against **`TranslatorProvider`** and **`TTSProvider`**
 | Doc | Contents |
 |-----|----------|
 | **[docs/QuickStart.md](docs/QuickStart.md)** | Install, prerequisites, CLI, LibreTranslate Docker, LLM examples, Python API, env vars, troubleshooting |
-| **[docs/Publishing.md](docs/Publishing.md)** | How to publish to PyPI so users can `pip install plycast` |
 | **This README** | Project introduction and layout |
+
+## Contributing
+
+A **contribution workflow** (guidelines, review process, and what we merge) is **in progress** and **not finalized** yet — so we are **not ready for pull requests** or formal code contributions at this time.
+
+**Issues are welcome:** please [open an issue](https://github.com/latoi-hub/plycast/issues) on GitHub for bugs, ideas, or questions.
 
 ## License
 
-Released under the [MIT License](LICENSE).
+**Open-source.** This project is released under the [MIT License](LICENSE).

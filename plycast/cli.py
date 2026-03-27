@@ -76,13 +76,19 @@ def build_parser() -> argparse.ArgumentParser:
         "--tts",
         choices=("system_say", "text_file"),
         default="system_say",
+        help="system_say: macOS speech (default); text_file: write text artifact instead of audio",
     )
     parser.add_argument(
         "--voice",
         default=None,
         help="Voice name for system_say",
     )
-    parser.add_argument("--max-chunk-chars", type=int, default=1500)
+    parser.add_argument(
+        "--max-chunk-chars",
+        type=int,
+        default=1500,
+        help="Max characters per translation chunk",
+    )
     parser.add_argument(
         "--audio-format",
         choices=("mp3", "aiff", "wav", "m4a"),
