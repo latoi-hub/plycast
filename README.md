@@ -15,6 +15,7 @@
 
 - [About](#about)
 - [Features](#features)
+- [Quick CLI sample (LLM)](#quick-cli-sample-llm)
 - [Architecture](#architecture)
 - [Documentation](#documentation)
 - [Contributing](#contributing)
@@ -43,6 +44,25 @@ The default CLI translator is **LibreTranslate**, which you can [self-host](http
 - **Translation:** chunked text; **LLM** path for natural tone; **LibreTranslate** for a free, self-hostable draft you can review and edit; Identity, OpenAI, Anthropic, unified **LLM** routing (`LLMTranslator`).
 - **Audio:** `SystemSayTTS`, `TextFileTTS`; configurable format and voice.
 - **CLI:** flags for translator, languages, API keys, TTS, chunk size — see QuickStart.
+
+## Quick CLI sample (LLM)
+
+Set **`OPENAI_API_KEY`** (or **`ANTHROPIC_API_KEY`** if you use a Claude model with `--llm-provider anthropic` / inferred from the model name), then run:
+
+```bash
+export OPENAI_API_KEY={Your API Key}
+plycast \
+  --input ./book.png \
+  --output-dir ./dist \
+  --source-lang vi \
+  --target-lang en \
+  --translator llm \
+  --llm-model gpt-4o-mini \
+  --tts system_say \
+  --voice "Samantha"
+```
+
+**Images** use OCR (install **Tesseract**; `--source-lang` selects the OCR language). For a faster check without audio, use **`--tts text_file`**. More examples and flags → **[docs/QuickStart.md](docs/QuickStart.md)**.
 
 ## Architecture
 
