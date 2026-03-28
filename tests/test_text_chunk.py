@@ -1,4 +1,4 @@
-from plycast.text import chunk_text
+from plycast.preprocess.chunking import chunk_text
 
 
 def test_chunk_preserves_short_paragraphs() -> None:

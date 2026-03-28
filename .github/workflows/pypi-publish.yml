@@ -1,10 +1,4 @@
 # Build wheels/sdist and publish to PyPI.
-#
-# Trusted publishing (recommended): configure your PyPI project to trust this GitHub repo
-# so no long-lived PYPI_API_TOKEN is needed. See:
-# https://docs.pypi.org/trusted-publishers/
-#
-# Alternative: set repository secret PYPI_API_TOKEN and uncomment the "with:" block below.
 
 name: Publish to PyPI
 

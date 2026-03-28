@@ -6,14 +6,16 @@ import sys
 from pathlib import Path
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
-if str(ROOT_DIR) not in sys.path:
-    sys.path.insert(0, str(ROOT_DIR))
+_src = ROOT_DIR / "src"
+if str(_src) not in sys.path:
+    sys.path.insert(0, str(_src))
 
-from plycast.models import PipelineInput
+from plycast.core.models import PipelineInput
 from plycast.pipeline import PlycastPipeline
-from plycast.providers import (
-    IdentityTranslator,
-    LibreTranslateTranslator,
+from plycast.engines.translate.providers import IdentityTranslator, LibreTranslateTranslator
+from plycast.engines.tts.providers import (
+    EspeakTTS,
+    ParlerTTS,
     SystemSayTTS,
     TextFileTTS,
 )
@@ -43,11 +45,31 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--target-lang", default="vi")
     parser.add_argument(
         "--tts",
-        choices=("text_file", "system_say"),
+        choices=("text_file", "system_say", "espeak", "parler"),
         default="text_file",
         help="TTS backend for smoke test",
     )
-    parser.add_argument("--voice", default=None, help="Voice for system_say")
+    parser.add_argument(
+        "--voice",
+        default=None,
+        help="Voice for system_say, espeak-ng -v, or Parler description override",
+    )
+    parser.add_argument(
+        "--parler-voice",
+        default=None,
+        help="With --tts parler: seed voice name (e.g. vi, laura)",
+    )
+    parser.add_argument(
+        "--parler-seed",
+        default=None,
+        help="With --tts parler: custom parler_voices.json path",
+    )
+    parser.add_argument(
+        "--parler-gender",
+        choices=("female", "male"),
+        default=None,
+        help="With --tts parler: female or male (omit for env / default)",
+    )
     parser.add_argument(
         "--input-text",
         default=None,
@@ -83,11 +105,19 @@ def main() -> None:
     else:
         translator = IdentityTranslator()
 
-    tts = (
-        SystemSayTTS(voice=args.voice)
-        if args.tts == "system_say"
-        else TextFileTTS()
-    )
+    if args.tts == "system_say":
+        tts = SystemSayTTS(voice=args.voice)
+    elif args.tts == "espeak":
+        tts = EspeakTTS(voice=args.voice)
+    elif args.tts == "parler":
+        tts = ParlerTTS(
+            description=args.voice,
+            parler_voice=args.parler_voice,
+            gender=args.parler_gender,
+            seed_path=args.parler_seed,
+        )
+    else:
+        tts = TextFileTTS()
     pipeline = PlycastPipeline(translator=translator, tts=tts)
 
     result = pipeline.run(
