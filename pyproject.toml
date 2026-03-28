@@ -37,7 +37,7 @@ parler = [
   "soundfile>=0.12",
   "torch>=2.1.0",
   "transformers>=4.41.0",
-  "parler-tts @ git+https://github.com/huggingface/parler-tts.git",
+  "parler-tts>=0.2.0",
 ]
 dev = ["pytest>=8.0"]
 

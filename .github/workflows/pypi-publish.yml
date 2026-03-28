@@ -21,14 +21,15 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install build
-        run: pip install build
+      - name: Install build and twine
+        run: pip install build twine
 
       - name: Build distribution
         run: python -m build
 
+      # Catches PyPI-rejected metadata (e.g. direct URL deps) before upload.
+      - name: Check distribution metadata
+        run: twine check dist/*
+
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
-        # If not using trusted publishing, set secret PYPI_API_TOKEN on the repo and use:
-        # with:
-        #   password: ${{ secrets.PYPI_API_TOKEN }}
