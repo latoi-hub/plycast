@@ -40,6 +40,8 @@ Optional extras: `pip install "plycast[docs]"`, `pip install "plycast[dev]"`, et
 python -m pip install -e .
 ```
 
+The package lives under **`src/plycast/`** (src layout). Tests and editable installs use that path automatically.
+
 Equivalent:
 
 ```bash
@@ -72,35 +74,50 @@ This adds **pypdf** and **python-docx** for `.pdf` and `.docx` ingestion. Same a
 | **Image OCR** (`.png`, `.jpg`, …) | A **Tesseract** binary on your `PATH`. macOS: `brew install tesseract tesseract-lang` (language packs, e.g. Chinese `chi_sim`). Linux/Windows: install Tesseract from your package manager or installer. |
 | **MP3 / m4a / aiff** (after WAV) | **ffmpeg** on `PATH`. macOS: `brew install ffmpeg`. Linux: `apt install ffmpeg` or equivalent. |
 | **`--tts system_say`** | **macOS** `say` only. |
-| **`--tts espeak`** | **`espeak-ng`** or **`espeak`** on `PATH` — default TTS on **Linux** (and non-macOS). See **[Voices.md](Voices.md)**. |
+| **`--tts parler`** | **Parler-TTS** (neural). **English-only** for reliable speech. Install: `pip install 'plycast[parler]'`. Default on **Linux/Windows** when `parler_tts` is importable. See **[Voices.md](Voices.md)**. |
+| **`--tts espeak`** | **`espeak-ng`** or **`espeak`** on `PATH` — fallback when Parler is not installed. See **[Voices.md](Voices.md)**. |
 | **`--tts text_file`** | Any OS; no audio engine. |
-| **Pick `--voice`** | **`system_say`**: macOS voice name. **`espeak`**: `espeak-ng --voices`. See **[Voices.md](Voices.md)**. |
+| **Pick `--voice`** | **`system_say`**: macOS voice name. **`espeak`**: `espeak-ng --voices`. **`parler`**: optional raw description; else seed via **`--parler-voice`** + **`--parler-gender`** (or default voice from **`--target-lang`**). See **[Voices.md](Voices.md)**. |
 
 For images, **`--source-lang`** selects the Tesseract language (e.g. `zh` → simplified Chinese).
 
 ## Running the CLI
 
-Minimal example (uses default **LibreTranslate** public API; set `--base-url` to your own server if needed):
+The CLI is a **thin Typer wrapper** over the same functions as the Python API (`convert_book`, `translate_book`, …). Subcommands:
+
+| Command | Purpose |
+|---------|---------|
+| **`plycast convert`** | Read → translate → audio (default path for most users) |
+| **`plycast translate`** | Read → translated text file only |
+| **`plycast tts`** | Read → speech (no translation) |
+| **`plycast inspect`** | File metadata + text preview (debugging) |
+
+**Full pipeline** (uses default **LibreTranslate** unless you pass `--translator identity`):
 
 ```bash
-python -m plycast.cli \
-  --input ./book.txt \
-  --output-dir ./dist \
+plycast convert ./book.txt \
   --source-lang en \
   --target-lang vi \
+  --output-dir ./dist \
   --tts system_say
 ```
 
-Console script (same entry point):
+**JSON output** (automation):
 
 ```bash
-plycast --input ./book.txt --output-dir ./dist --source-lang en --target-lang vi --tts system_say
+plycast convert ./book.txt -s en -t vi -o ./dist --translator identity --tts text_file --json
+```
+
+**Module entry** (same app):
+
+```bash
+python -m plycast.cli convert ./book.txt --source-lang en --target-lang vi --output-dir ./dist
 ```
 
 **Outputs**
 
 - Translated text: `dist/<stem>.<target>.txt`
-- Audio (default **mp3** with `system_say` or `espeak`): `dist/<stem>.<target>.mp3`
+- Audio (default **mp3** with `system_say`, `espeak`, or `parler`): `dist/<stem>.<target>.mp3`
 
 ## Translators
 
@@ -129,11 +146,10 @@ curl http://localhost:5001/languages
 Example CLI against local LibreTranslate:
 
 ```bash
-python -m plycast.cli \
-  --input ./book.txt \
-  --output-dir ./dist \
+plycast convert ./book.txt \
   --source-lang en \
   --target-lang vi \
+  --output-dir ./dist \
   --base-url http://localhost:5001 \
   --tts text_file
 ```
@@ -148,28 +164,27 @@ Adjust `LT_LOAD_ONLY` in `docker-compose.yml` for loaded languages, then restart
 
 ## CLI options (reference)
 
+Run **`plycast --help`**, **`plycast convert --help`**, etc. Common options on **`convert`**:
+
 | Option | Purpose |
 |--------|---------|
-| `--translator identity\|libretranslate\|llm` | Backend |
-| `--translator llm` | OpenAI or Anthropic via `--llm-model` and optional `--llm-provider` |
-| `--llm-model` | Model id (default `gpt-4o-mini` when using `llm`) |
-| `--llm-provider openai\|anthropic` | Force vendor; omit to infer from model name |
-| `--base-url` | LibreTranslate server URL, or LLM API base (defaults if omitted) |
-| `--api-key` | Optional LibreTranslate key; required for `llm` unless set in env |
-| `--tts system_say\|espeak\|text_file` | macOS speech / espeak-ng / text-only (defaults: `system_say` on macOS, `espeak` elsewhere) |
-| `--voice` | `system_say` voice name or `espeak-ng -v` voice |
-| `--max-chunk-chars` | Translation chunk size |
-| `--audio-format mp3\|aiff\|wav\|m4a` | Audio output |
-
-Run **`plycast --help`** for the full list.
+| `-s` / `--source-lang` | Source language |
+| `-t` / `--target-lang` | Target language |
+| `-o` / `--output-dir` | Output directory (default `dist`) |
+| `--translator` | `identity` \| `libretranslate` \| `llm` |
+| `--llm-model`, `--llm-provider` | When using `llm` |
+| `--base-url`, `--api-key` | LibreTranslate or LLM |
+| `--tts` | `system_say` \| `parler` \| `espeak` \| `text_file` |
+| `--voice`, `--parler-voice`, `--parler-gender`, `--parler-seed` | TTS / Parler seed |
+| `--max-chunk-chars`, `--audio-format` | Chunking and audio format |
+| `--json` | Machine-readable result on stdout |
 
 ## LLM examples
 
 **Provider inferred from model** (`gpt-*` → OpenAI):
 
 ```bash
-OPENAI_API_KEY=your_key python -m plycast.cli \
-  --input ./book.txt \
+OPENAI_API_KEY=your_key plycast convert ./book.txt \
   --output-dir ./dist \
   --source-lang en \
   --target-lang vi \
@@ -181,8 +196,7 @@ OPENAI_API_KEY=your_key python -m plycast.cli \
 **Explicit Anthropic:**
 
 ```bash
-ANTHROPIC_API_KEY=your_key python -m plycast.cli \
-  --input ./book.txt \
+ANTHROPIC_API_KEY=your_key plycast convert ./book.txt \
   --output-dir ./dist \
   --source-lang en \
   --target-lang vi \
@@ -195,8 +209,7 @@ ANTHROPIC_API_KEY=your_key python -m plycast.cli \
 **Chinese → Vietnamese** (LLM + macOS `say`, Vietnamese voice):
 
 ```bash
-OPENAI_API_KEY=your_key python -m plycast.cli \
-  --input ./book.txt \
+OPENAI_API_KEY=your_key plycast convert ./book.txt \
   --output-dir dist \
   --source-lang zh \
   --target-lang vi \
@@ -210,14 +223,34 @@ If `OPENAI_API_KEY` is already exported, omit the prefix; you can pass **`--api-
 
 ## Python API
 
-**High-level pipeline:**
+**One-shot workflow (matches `plycast convert`):**
 
 ```python
 from pathlib import Path
 
-from plycast.models import PipelineInput
-from plycast.pipeline import PlycastPipeline
-from plycast.providers import LibreTranslateTranslator, SystemSayTTS
+from plycast import convert_book
+
+result = convert_book(
+    Path("book.txt"),
+    source_lang="en",
+    target_lang="vi",
+    output_dir=Path("dist"),
+    translator="identity",
+    tts="text_file",
+)
+
+print(result.translated_text_path, result.audio_path)
+```
+
+**Composable pipeline (custom providers):**
+
+```python
+from pathlib import Path
+
+from plycast import PlycastPipeline
+from plycast.core.models import PipelineInput
+from plycast.engines.translate.providers import LibreTranslateTranslator
+from plycast.engines.tts.providers import SystemSayTTS
 
 pipeline = PlycastPipeline(
     translator=LibreTranslateTranslator(base_url="https://libretranslate.com"),
@@ -243,8 +276,8 @@ print(result.audio_path)
 
 ```python
 from pathlib import Path
-from plycast.pipelines import run_read_translate
-from plycast.providers import IdentityTranslator
+from plycast.pipeline import run_read_translate
+from plycast.engines.translate.providers import IdentityTranslator
 
 run_read_translate(
     Path("book.txt"),
@@ -256,7 +289,7 @@ run_read_translate(
 )
 ```
 
-**Custom adapters:** implement `plycast.providers.TranslatorProvider` and `plycast.providers.TTSProvider`. Vendor HTTP clients live under `plycast.providers.<vendor>`.
+**Custom adapters:** implement `plycast.engines.translate.base.TranslatorProvider` and `plycast.engines.tts.base.TTSProvider`. Concrete translators live under `plycast.engines.translate.providers`; TTS engines under `plycast.engines.tts.providers`.
 
 ## Environment variables
 
@@ -287,6 +320,9 @@ Supported smoke translators: `identity`, `libretranslate`.
 ## Troubleshooting
 
 - **`system_say` spells characters:** choose a `--voice` that matches the target language, and avoid mixing scripts (e.g. Chinese + Latin) in one paragraph when possible.
-- **MP3 output:** `system_say` writes AIFF first; **ffmpeg** converts. Install ffmpeg if conversion fails. Same for **`espeak`** (WAV → mp3/m4a) when not using **`--audio-format wav`**.
+- **MP3 output:** `system_say` writes AIFF first; **ffmpeg** converts. Install ffmpeg if conversion fails. Same for **`espeak`** and **`parler`** (WAV → mp3/m4a) when not using **`--audio-format wav`**.
+- **Parler import / CUDA:** install with `pip install 'plycast[parler]'`. First run downloads model weights. Use **`PLYCAST_PARLER_DEVICE=cpu`** if GPU drivers are broken.
+- **Parler + non-English `--target-lang`:** Parler is **English-only** for good results; use **`--target-lang en`** or another **`--tts`** backend. The CLI warns on stderr when Parler is used with a non-English target language.
+- **Unknown Parler voice:** use a name from the packaged seed (see **[Voices.md](Voices.md)**) or **`--parler-seed`** / **`PLYCAST_PARLER_SEED`** for your own JSON.
 - **`No module named 'PIL'`:** reinstall with `pip install -e .` so Pillow is installed.
 - **`tesseract` not found:** install Tesseract and ensure it is on `PATH`, or install via Homebrew (`brew install tesseract tesseract-lang`). The library also checks common Homebrew paths on macOS.

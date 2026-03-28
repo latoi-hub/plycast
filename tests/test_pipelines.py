@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from plycast.pipelines import run_read_translate
-from plycast.providers import IdentityTranslator
+from plycast.pipeline import run_read_translate
+from plycast.engines.translate.providers import IdentityTranslator
 
 
 def test_run_read_translate_identity(tmp_path: Path) -> None:

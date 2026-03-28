@@ -1,4 +1,4 @@
-from plycast.providers.llm import infer_llm_provider
+from plycast.engines.translate.providers.llm import infer_llm_provider
 
 
 def test_infer_openai_models() -> None:
