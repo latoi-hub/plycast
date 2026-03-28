@@ -6,15 +6,15 @@ import sys
 from pathlib import Path
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
-if str(ROOT_DIR) not in sys.path:
-    sys.path.insert(0, str(ROOT_DIR))
+_src = ROOT_DIR / "src"
+if str(_src) not in sys.path:
+    sys.path.insert(0, str(_src))
 
-from plycast.models import PipelineInput
+from plycast.core.models import PipelineInput
 from plycast.pipeline import PlycastPipeline
-from plycast.providers import (
+from plycast.engines.translate.providers import IdentityTranslator, LibreTranslateTranslator
+from plycast.engines.tts.providers import (
     EspeakTTS,
-    IdentityTranslator,
-    LibreTranslateTranslator,
     ParlerTTS,
     SystemSayTTS,
     TextFileTTS,

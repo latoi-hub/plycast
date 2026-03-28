@@ -27,7 +27,7 @@ pip install 'plycast[parler]'
 
 **Device:** CUDA is used when available, else Apple **MPS** on macOS, else **CPU**. Override with env **`PLYCAST_PARLER_DEVICE`** (e.g. `cuda:0`, `mps`, `cpu`). Model id: **`PLYCAST_PARLER_MODEL`** (default `parler-tts/parler-tts-mini-v1`).
 
-**Seed file:** `plycast/providers/tts/seeds/parler_voices.json` (also bundled in the wheel). Each **voice name** has a **female** and **male** English Parler description. Override the file path with **`--parler-seed /path/to/parler_voices.json`** or **`PLYCAST_PARLER_SEED`**.
+**Seed file:** `plycast/engines/tts/providers/seeds/parler_voices.json` (also bundled in the wheel). Each **voice name** has a **female** and **male** English Parler description. Override the file path with **`--parler-seed /path/to/parler_voices.json`** or **`PLYCAST_PARLER_SEED`**.
 
 **Seed “language” names** (English description hints for audiobook *style*; **spoken text should still be English**):
 
@@ -55,13 +55,13 @@ pip install 'plycast[parler]'
 **Typical CLI** (English output; explicit seed voice + gender):
 
 ```bash
-plycast ... --tts parler --target-lang en --parler-voice en --parler-gender female
+plycast convert ./book.txt -s en -t en -o ./dist --tts parler --parler-voice en --parler-gender female
 ```
 
 **Default seed key from `--target-lang`** (omit **`--parler-voice`**; still use **`en`** for reliable speech):
 
 ```bash
-plycast ... --tts parler --target-lang en --parler-gender male
+plycast convert ./book.txt -s en -t en -o ./dist --tts parler --parler-gender male
 ```
 
 Omit **`--parler-gender`** to use **`PLYCAST_PARLER_GENDER`** or **`female`**. Set **`--parler-voice`** via **`PLYCAST_PARLER_VOICE`** when you prefer env.
@@ -69,10 +69,10 @@ Omit **`--parler-gender`** to use **`PLYCAST_PARLER_GENDER`** or **`female`**. S
 **Custom description:** pass a full English Parler prompt as **`--voice`** (overrides seed and env description):
 
 ```bash
-plycast ... --tts parler --voice "Jon's voice is monotone yet slightly fast in delivery, with a very close recording that almost has no background noise."
+plycast convert ./book.txt -s en -t en -o ./dist --tts parler --voice "Jon's voice is monotone yet slightly fast in delivery, with a very close recording that almost has no background noise."
 ```
 
-See the [Parler-TTS README](https://github.com/huggingface/parler-tts) for prompt tips. Programmatic API: **`parler_voice_description(name, gender)`**, **`parler_seed_voice_names()`**, **`load_parler_voice_seed()`** in **`plycast.providers.tts.parler_voices`** (aliases **`parler_preset_description`** / **`parler_preset_languages`** remain for compatibility).
+See the [Parler-TTS README](https://github.com/huggingface/parler-tts) for prompt tips. Programmatic API: **`parler_voice_description(name, gender)`**, **`parler_seed_voice_names()`**, **`load_parler_voice_seed()`** in **`plycast.engines.tts.providers.parler_voices`** (aliases **`parler_preset_description`** / **`parler_preset_languages`** remain for compatibility).
 
 ---
 
@@ -94,7 +94,7 @@ espeak-ng --voices
 Pick a **voice name** from the second column (e.g. `vi`, `cmn`, `en-gb`) and pass it as **`--voice`**:
 
 ```bash
-plycast ... --tts espeak --voice vi --target-lang vi
+plycast convert ./book.txt -s vi -t vi -o ./dist --tts espeak --voice vi
 ```
 
 Test without plycast:

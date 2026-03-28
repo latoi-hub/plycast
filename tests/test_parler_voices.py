@@ -1,7 +1,7 @@
 import pytest
 
-from plycast.providers.tts.parler import ParlerTTS
-from plycast.providers.tts.parler_voices import (
+from plycast.engines.tts.providers.parler import ParlerTTS
+from plycast.engines.tts.providers.parler_voices import (
     normalize_parler_language,
     parler_preset_description,
     parler_seed_voice_names,

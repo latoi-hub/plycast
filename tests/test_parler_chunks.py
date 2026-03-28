@@ -1,6 +1,6 @@
 """Chunking for Parler TTS (no model load)."""
 
-from plycast.providers.tts.parler import _split_tts_chunks
+from plycast.engines.tts.providers.parler import _split_tts_chunks
 
 
 def test_split_respects_max_chars() -> None:
