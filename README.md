@@ -144,13 +144,14 @@ More env vars, CLI flags, and troubleshooting → **[docs/QuickStart.md](docs/Qu
 - **Input:** `.txt`, `.md`; optional `.pdf` / `.docx` (`pip install ".[docs]"`); images with OCR and `--source-lang` for Tesseract languages (e.g. `zh`).
 - **Translation:** chunked text; **LLM** path for natural tone; **LibreTranslate** for a free, self-hostable draft you can review and edit; Identity, OpenAI, Anthropic, unified **LLM** routing (`LLMTranslator`).
 - **Audio:** **`SystemSayTTS`** (macOS **`say`**); **`ParlerTTS`** / **`--tts parler`** (neural TTS, **English-only** for reliable quality; optional **`pip install 'plycast[parler]'`**, default on non-macOS when installed; seed voices + **`--parler-gender`**, or raw **`--voice`**); **`EspeakTTS`** / **`--tts espeak`** (**`espeak-ng`**, fallback when Parler is not installed); **`TextFileTTS`** / **`--tts text_file`** anywhere. See **[docs/Voices.md](docs/Voices.md)**.
-- **CLI:** flags for translator, languages, API keys, TTS, chunk size — see QuickStart.
+- **CLI:** flags for translator, languages, API keys, TTS, chunk size — **[docs/CLI.md](docs/CLI.md)** (reference) and **[docs/QuickStart.md](docs/QuickStart.md)** (tutorials).
 
 ## Documentation
 
 | Doc | Contents |
 |-----|----------|
-| **[docs/QuickStart.md](docs/QuickStart.md)** | Install, prerequisites, CLI, LibreTranslate Docker, LLM examples, Python API, env vars, troubleshooting |
+| **[docs/QuickStart.md](docs/QuickStart.md)** | Install, prerequisites, CLI intro, LibreTranslate Docker, LLM examples, Python API, env vars, troubleshooting |
+| **[docs/CLI.md](docs/CLI.md)** | **CLI reference:** all commands and options (`convert`, `translate`, `tts`, `inspect`), outputs, translators, TTS backends, `--json` |
 | **[docs/Voices.md](docs/Voices.md)** | **`system_say`** (macOS) and **`espeak`** (Linux-friendly) voices / **`--voice`** |
 | **[examples/README.md](examples/README.md)** | Vietnamese sample: **vi → en + Parler (laura)** and **vi + system_say (Linh)** — CLI + Python |
 | **This README** | Project introduction and layout |

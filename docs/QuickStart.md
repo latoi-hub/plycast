@@ -10,6 +10,7 @@ Step-by-step install and usage for **plycast**. For a short overview of the proj
 - [System software (OCR and audio)](#system-software-ocr-and-audio)
 - [macOS voices (`--voice`)](Voices.md)
 - [Running the CLI](#running-the-cli)
+- [CLI reference (CLI.md)](CLI.md)
 - [Translators](#translators)
 - [Self-hosted LibreTranslate (Docker)](#self-hosted-libretranslate-docker)
 - [CLI options (reference)](#cli-options-reference)
@@ -164,7 +165,9 @@ Adjust `LT_LOAD_ONLY` in `docker-compose.yml` for loaded languages, then restart
 
 ## CLI options (reference)
 
-Run **`plycast --help`**, **`plycast convert --help`**, etc. Common options on **`convert`**:
+For **tables of every flag** on **`convert`**, **`translate`**, **`tts`**, and **`inspect`**, plus translators, TTS backends, and **`--json`**, see **[CLI.md](CLI.md)**.
+
+Quick reminders for **`convert`**:
 
 | Option | Purpose |
 |--------|---------|
