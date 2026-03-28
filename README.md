@@ -4,7 +4,7 @@
 [![PyPI](https://img.shields.io/badge/PyPI-plycast-3775A9?logo=pypi&logoColor=white)](https://pypi.org/project/plycast/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Open Source](https://img.shields.io/badge/open%20source-yes-success.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.1.0-informational.svg)](pyproject.toml)
+[![Version](https://img.shields.io/badge/version-0.1.1-informational.svg)](pyproject.toml)
 
 ### At a glance
 
