@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "default_voice": "en",
+  "voices": {
+    "en": {
+      "female": "A warm female narrator reading in a natural audiobook style. Her delivery is calm and expressive, with clear articulation and steady pacing for long-form listening. Studio-quality close microphone, very clear audio, no background noise.",
+      "male": "A warm male narrator reading in a natural audiobook style. His delivery is calm and expressive, with clear articulation and steady pacing for long-form listening. Studio-quality close microphone, very clear audio, no background noise."
+    },
+    "es": {
+      "female": "A warm female narrator with a natural audiobook tone for Spanish-language text. Smooth, expressive intonation and relaxed pacing. Clear studio recording, intimate and close, very high quality with no background noise.",
+      "male": "A warm male narrator with a natural audiobook tone for Spanish-language text. Smooth, expressive intonation and relaxed pacing. Clear studio recording, intimate and close, very high quality with no background noise."
+    },
+    "fr": {
+      "female": "A refined female narrator suited to French audiobooks: melodic, natural phrasing and moderate speed. Warm and engaging without theatrics. Very clear close-mic voice, professional studio sound, no echo or noise.",
+      "male": "A refined male narrator suited to French audiobooks: melodic, natural phrasing and moderate speed. Warm and engaging without theatrics. Very clear close-mic voice, professional studio sound, no echo or noise."
+    },
+    "de": {
+      "female": "A clear female narrator for German audiobook content: steady rhythm, precise consonants, and a gentle authoritative tone. Natural pauses between ideas. Dry studio acoustic, very clear audio, no room noise.",
+      "male": "A clear male narrator for German audiobook content: steady rhythm, precise consonants, and a gentle authoritative tone. Natural pauses between ideas. Dry studio acoustic, very clear audio, no room noise."
+    },
+    "zh": {
+      "female": "A soft female narrator ideal for Chinese audiobook narration: even pacing, natural tone contours, and easy long-form listening. Warm and articulate. High-quality close recording, very clear speech, silent background.",
+      "male": "A soft male narrator ideal for Chinese audiobook narration: even pacing, natural tone contours, and easy long-form listening. Warm and articulate. High-quality close recording, very clear speech, silent background."
+    },
+    "ja": {
+      "female": "A gentle female narrator for Japanese audiobook-style reading: polite, smooth delivery with natural pitch variation. Unhurried and easy to follow. Clean studio voice, very close and clear, no background hum.",
+      "male": "A gentle male narrator for Japanese audiobook-style reading: polite, smooth delivery with natural pitch variation. Unhurried and easy to follow. Clean studio voice, very close and clear, no background hum."
+    },
+    "ko": {
+      "female": "A calm female narrator for Korean audiobook listening: clear diction, natural emotional shading, and comfortable pacing for long sessions. Intimate studio recording, very clear audio, no reverb or noise.",
+      "male": "A calm male narrator for Korean audiobook listening: clear diction, natural emotional shading, and comfortable pacing for long sessions. Intimate studio recording, very clear audio, no reverb or noise."
+    },
+    "vi": {
+      "female": "A warm female narrator for Vietnamese audiobook text: melodic, natural flow and clear tones suited to storytelling. Relaxed but attentive pacing. Professional close-mic capture, very clear voice, silent background.",
+      "male": "A warm male narrator for Vietnamese audiobook text: melodic, natural flow and clear tones suited to storytelling. Relaxed but attentive pacing. Professional close-mic capture, very clear voice, silent background."
+    },
+    "pt": {
+      "female": "A smooth female narrator for Portuguese audiobook narration: warm delivery, natural emphasis, and steady rhythm for Brazilian or European Portuguese text. Expressive but not dramatic. Studio clarity, very close recording, no background noise.",
+      "male": "A smooth male narrator for Portuguese audiobook narration: warm delivery, natural emphasis, and steady rhythm. Expressive but not dramatic. Studio clarity, very close recording, no background noise."
+    },
+    "it": {
+      "female": "A lyrical female narrator for Italian audiobooks: musical phrasing, warm tone, and natural cadence for extended listening. Clear articulation. High-fidelity close voice, dry studio, very clear audio.",
+      "male": "A lyrical male narrator for Italian audiobooks: musical phrasing, warm tone, and natural cadence for extended listening. Clear articulation. High-fidelity close voice, dry studio, very clear audio."
+    },
+    "laura": {
+      "female": "Laura's voice is warm and expressive with a natural audiobook cadence, moderate speed, and very clear articulation. Close studio recording, very high quality, no background noise.",
+      "male": "A warm male narrator with a similar calm audiobook style to Laura: expressive, moderate speed, very clear articulation. Close studio recording, very high quality, no background noise."
+    },
+    "jon": {
+      "female": "A clear female narrator with a steady, slightly fast audiobook delivery reminiscent of Jon's energy: close mic, minimal background noise, very intelligible.",
+      "male": "Jon's voice is monotone yet slightly fast in delivery, with a very close recording that almost has no background noise."
+    },
+    "gary": {
+      "female": "A warm female narrator with a grounded, conversational audiobook tone: clear and steady, intimate studio sound, no reverb.",
+      "male": "Gary's voice is steady and warm with natural audiobook pacing, clear consonants, and a close dry studio recording with no background noise."
+    }
+  }
+}

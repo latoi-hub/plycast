@@ -30,6 +30,13 @@ Repository = "https://github.com/latoi-hub/plycast"
 [project.optional-dependencies]
 docs = ["pypdf>=4.0", "python-docx>=1.0"]
 full = ["pypdf>=4.0", "python-docx>=1.0"]
+parler = [
+  "numpy>=1.24",
+  "soundfile>=0.12",
+  "torch>=2.1.0",
+  "transformers>=4.41.0",
+  "parler-tts @ git+https://github.com/huggingface/parler-tts.git",
+]
 dev = ["pytest>=8.0"]
 
 [project.scripts]
@@ -42,6 +49,9 @@ package-dir = {"" = "."}
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["plycast*"]
+
+[tool.setuptools.package-data]
+plycast = ["providers/tts/seeds/*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

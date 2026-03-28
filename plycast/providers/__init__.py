@@ -10,6 +10,8 @@ Subpackages hold vendor-specific code (``openai/``, ``anthropic/``, ``libretrans
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 # Protocols
 from .base import TTSProvider, TranslatorProvider
 
@@ -19,6 +21,9 @@ from .identity import IdentityTranslator
 from .libretranslate import LibreTranslateClient, LibreTranslateTranslator
 from .openai import BearerToken, OpenAIClient, OpenAITranslator
 from .tts import EspeakTTS, SystemSayTTS, TextFileTTS
+
+if TYPE_CHECKING:
+    from .tts.parler import ParlerTTS as ParlerTTS
 
 # LLM
 from .llm import LLMTranslator, infer_llm_provider
@@ -37,9 +42,18 @@ __all__ = [
     "OpenAIClient",
     "OpenAITranslator",
     "EspeakTTS",
+    "ParlerTTS",
     "SystemSayTTS",
     "TextFileTTS",
     "TTSProvider",
     "TranslatorProvider",
     "infer_llm_provider",
 ]
+
+
+def __getattr__(name: str):
+    if name == "ParlerTTS":
+        from .tts import ParlerTTS
+
+        return ParlerTTS
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

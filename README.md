@@ -42,7 +42,7 @@ The default CLI translator is **LibreTranslate**, which you can [self-host](http
 
 - **Input:** `.txt`, `.md`; optional `.pdf` / `.docx` (`pip install ".[docs]"`); images with OCR and `--source-lang` for Tesseract languages (e.g. `zh`).
 - **Translation:** chunked text; **LLM** path for natural tone; **LibreTranslate** for a free, self-hostable draft you can review and edit; Identity, OpenAI, Anthropic, unified **LLM** routing (`LLMTranslator`).
-- **Audio:** **`SystemSayTTS`** (macOS **`say`**); **`EspeakTTS`** / **`--tts espeak`** (**`espeak-ng`**, default on Linux); **`TextFileTTS`** / **`--tts text_file`** anywhere. See **[docs/Voices.md](docs/Voices.md)**.
+- **Audio:** **`SystemSayTTS`** (macOS **`say`**); **`ParlerTTS`** / **`--tts parler`** (neural TTS, **English-only** for reliable quality; optional **`pip install 'plycast[parler]'`**, default on non-macOS when installed; seed voices + **`--parler-gender`**, or raw **`--voice`**); **`EspeakTTS`** / **`--tts espeak`** (**`espeak-ng`**, fallback when Parler is not installed); **`TextFileTTS`** / **`--tts text_file`** anywhere. See **[docs/Voices.md](docs/Voices.md)**.
 - **CLI:** flags for translator, languages, API keys, TTS, chunk size — see QuickStart.
 
 ## Quick CLI sample (LLM)

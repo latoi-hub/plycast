@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import os
 import sys
 from pathlib import Path
@@ -32,9 +33,35 @@ def _get_env(*keys: str) -> str | None:
     return None
 
 
+def _bcp47_primary_language(code: str) -> str:
+    s = code.strip().lower().replace("_", "-")
+    if not s:
+        return ""
+    return s.split("-", 1)[0]
+
+
+def _warn_if_parler_not_english_target(target_lang: str) -> None:
+    """Parler checkpoints used by plycast are English-centric; spoken output quality is only reliable for English."""
+    if _bcp47_primary_language(target_lang) == "en":
+        return
+    print(
+        "plycast: Parler-TTS is intended for English speech only; "
+        f"--target-lang {target_lang!r} may sound poor or wrong. "
+        "Use --target-lang en for reliable audio, or choose --tts espeak / system_say for other languages.",
+        file=sys.stderr,
+    )
+
+
 def _default_tts_backend() -> str:
-    """macOS: ``say``; Linux/Windows: espeak-ng when available (CLI default)."""
-    return "system_say" if sys.platform == "darwin" else "espeak"
+    """macOS: ``say``; else Parler when installed, otherwise espeak-ng."""
+    if sys.platform == "darwin":
+        return "system_say"
+    try:
+        if importlib.util.find_spec("parler_tts") is not None:
+            return "parler"
+    except (ImportError, ValueError):
+        pass
+    return "espeak"
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -80,16 +107,36 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--tts",
-        choices=("system_say", "espeak", "text_file"),
+        choices=("system_say", "espeak", "parler", "text_file"),
         default=_default_tts_backend(),
-        help="system_say: macOS say; espeak: espeak-ng/espeak (Linux-friendly default); "
-        "text_file: text artifact only",
+        help="system_say: macOS say; parler: neural TTS, English-only for reliable speech "
+        "(needs pip install 'plycast[parler]'); espeak: espeak-ng/espeak; text_file: text only. "
+        "Non-macOS default: parler if installed, else espeak.",
     )
     parser.add_argument(
         "--voice",
         default=None,
-        help="system_say: macOS voice name; espeak: espeak-ng -v voice (e.g. vi, cmn); omit "
-        "to infer from --target-lang",
+        help="system_say: macOS voice name; espeak: espeak-ng -v voice (e.g. vi, cmn); "
+        "parler: full custom English description (overrides seed + --parler-voice)",
+    )
+    parser.add_argument(
+        "--parler-voice",
+        default=None,
+        help="With --tts parler: seed voice name (e.g. en, laura, jon); 'vi' etc. are style "
+        "labels only—spoken output should still be English text. Env: PLYCAST_PARLER_VOICE.",
+    )
+    parser.add_argument(
+        "--parler-seed",
+        default=None,
+        help="With --tts parler: path to custom parler_voices.json (default: packaged seed). "
+        "Env: PLYCAST_PARLER_SEED.",
+    )
+    parser.add_argument(
+        "--parler-gender",
+        choices=("female", "male"),
+        default=None,
+        help="With --tts parler: female or male row in the seed (ignored if --voice is set). "
+        "Omit for PLYCAST_PARLER_GENDER or female.",
     )
     parser.add_argument(
         "--max-chunk-chars",
@@ -151,6 +198,14 @@ def main() -> None:
         tts = AudioService.make_system_say_tts(voice=args.voice)
     elif args.tts == "espeak":
         tts = AudioService.make_espeak_tts(voice=args.voice)
+    elif args.tts == "parler":
+        _warn_if_parler_not_english_target(args.target_lang)
+        tts = AudioService.make_parler_tts(
+            description=args.voice,
+            parler_voice=args.parler_voice,
+            gender=args.parler_gender,
+            seed_path=args.parler_seed,
+        )
     else:
         tts = AudioService.make_text_file_tts()
     pipeline = PlycastPipeline(translator=translator, tts=tts)
