@@ -4,10 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "plycast"
-version = "0.1.0"
+version = "0.1.1"
 description = "Ingest text (txt/md/pdf/docx/images), translate, and synthesize audio."
 readme = "README.md"
 requires-python = ">=3.10"
+license = "MIT"
 dependencies = [
   "pillow>=10.0",
   "pytesseract>=0.3.10",
@@ -20,8 +21,7 @@ authors = [
 keywords = ["translation", "tts", "audiobook", "library"]
 classifiers = [
   "Programming Language :: Python :: 3",
-  "License :: OSI Approved :: MIT License",
-  "Operating System :: OS Independent"
+  "Operating System :: OS Independent",
 ]
 
 [project.urls]
