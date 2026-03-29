@@ -5,11 +5,18 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Open Source](https://img.shields.io/badge/open%20source-yes-success.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-0.1.1-informational.svg)](pyproject.toml)
+---
 
-### At a glance
+Convert books into multilingual audiobooks with context-aware LLM translation and text-to-speech.
+Turn PDF, DOCX, images, or text → translate → generate audio (MP3) in one pipeline.
 
-- Turn stories, notes, and documents into **spoken audio** in another language—one path from **file → translation → sound**.
-- **Open source** under the [MIT License](LICENSE): use, change, and share freely.
+## 🚀 At a glance
+
+- 📚 Convert documents into **translated audiobooks**
+- 🌍 Multilingual support with LLM-based translation
+- 🧠 More natural, context-aware wording (better for listening)
+- 🔌 Open-source, local-first, BYOK-friendly
+
 
 ---
 
