@@ -205,9 +205,9 @@ With options:
 
 ```bash
 plycast tts input.txt \
-  --lang vi \
+  --lang en \
   --tts system_say \
-  --voice Linh \
+  --voice Samantha \
   --audio-format mp3
 ```
 
@@ -221,9 +221,9 @@ from plycast import synthesize_book
 
 result = synthesize_book(
     Path("input.txt"),
-    tts_language="vi",
+    tts_language="en",
     tts="system_say",
-    voice="Linh",
+    voice="Samantha",
     audio_format="mp3",
 )
 
